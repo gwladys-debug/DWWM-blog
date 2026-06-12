@@ -14,7 +14,7 @@ Le visiteur peut naviguer sur le blog de manière anonyme et consulter le conten
 | **UC-VIS-01** |
 Nom du Cas d'Utilisation: Consulter la liste des articles |
 Déclencheur (Action) : Arrivée sur la page d'accueil du blog. |
-Résultat attendu (Système) : Affichage des articles ayant le statut `"publié"`, triés du plus récent au plus ancien, avec une pagination standard. |
+Résultat attendu (Système) : Affichage des articles ayant le statut "publié", triés du plus récent au plus ancien, avec une pagination standard. |
 
 | **UC-VIS-02** |
 Nom du Cas d'Utilisation : Filtrer par catégorie |
