@@ -1,0 +1,195 @@
+_____________________________________________________________________________________________________________________
+                                                    Artisan
+_____________________________________________________________________________________________________________________
+Exo 1	Explorer Artisant
+
+1. Tape php artisan sans argument. Que s'affiche-t-il ? À quoi cela te sert-il ?
+Ce qui s'affiche : La version de Laravel installée, la syntaxe d'utilisation globale, suivies de la liste complète de toutes les commandes disponibles dans ton projet,
+ classées par catégories.
+
+À quoi ça sert : C'est l'aide-mémoire ultime du développeur. Cela te sert à retrouver une commande dont tu as oublié le nom exact,
+à vérifier la syntaxe d'un outil ou à découvrir des fonctionnalités intégrées à Laravel que tu ne connais pas encore.
+
+2. Cite 3 familles que tu observes dans la liste
+Les familles sont facilement reconnaissables grâce au préfixe suivi de deux-points (:). En voici 3 très courantes :
+
+make: (Sert à générer des fichiers boilerplate : modèles, contrôleurs, migrations, etc.)
+
+route: (Sert à gérer, lister et mettre en cache les routes de l'application)
+
+migrate: (Sert à gérer les fichiers de migration et la structure de la base de données)
+
+3. Tape php artisan make:model --help. Quelles options sont disponibles ? À quoi sert l'option -m ?
+En tapant cette commande, Laravel affiche le manuel d'utilisation spécifique à la création de modèles.
+
+Options disponibles (quelques exemples clés) :
+
+-c ou --controller : Crée un contrôleur pour le modèle.
+
+-f ou --factory : Crée une factory pour générer de fausses données.
+
+-s ou --seed : Crée un fichier Seeder.
+
+-a ou --all : Crée en même temps la migration, la factory, le seeder et le contrôleur.
+
+À quoi sert l'option -m ?
+Elle sert à générer automatiquement le fichier de migration lié à ce modèle (ex: create_articles_table.php si ton modèle s'appelle Article),
+t'évitant ainsi d'avoir à taper une seconde commande.
+
+4. Quelle commande Artisan tapes-tu pour voir la liste de toutes les routes définies dans ton projet ?
+php artisan route:list
+
+Cette commande est ultra-pratique pour vérifier que tes URLs (comme /articles) pointent bien vers la bonne méthode de ton ArticleController !
+
+______________________________________________________________________________________________________________________________________________________________________________________________________
+Exo 2	Serveur de dévoloppement
+
+Voici les réponses pour cette étape de prise en main du serveur de développement :
+
+1. Quelle URL s'affiche dans le terminal ?
+Par défaut, l'adresse qui s'affiche est :
+
+[http://127.0.0.1:8000](http://127.0.0.1:8000) (ou http://localhost:8000)
+
+Lorsque tu l'ouvres dans ton navigateur, tu tombes sur la page d'accueil par défaut de Laravel.
+
+2. Que se passe-t-il dans le terminal à chaque chargement de page ?
+Le terminal affiche des lignes de logs en temps réel. À chaque fois que tu rafraîchis la page ou cliques sur un lien, tu vois défiler :
+
+La date et l'heure de la requête.
+
+La méthode HTTP utilisée (souvent GET).
+
+L'URL demandée (par exemple / ou /articles).
+
+Le code de statut HTTP renvoyé par le serveur (par exemple 200 si tout va bien, ou 404 si la page n'existe pas).
+
+3. Peux-tu taper d'autres commandes dans ce terminal ? Que faut-il faire si tu as besoin de taper des commandes Artisan en parallèle ?
+Non, tu ne peux pas. Le terminal est actuellement "bloqué" (ou accaparé) par le processus du serveur qui tourne en arrière-plan.
+
+4. Arrête le serveur. Quelle est la combinaison de touches ?
+Pour couper proprement le serveur et libérer le terminal, il faut utiliser la combinaison de touches :
+
+Ctrl + C
+
+_________________________________________________________________________________________________________________________________________________________________
+Exo 3	Générer les fichiers du blog
+Partie A — Génération
+
+		Élément à créer				                            |Commande Artisan
+Le modèle Article					                            |php artisan make:model Article
+Le modèle Article et sa migration en une seule commande         |php artisan make:model Article -m
+Le contrôleur ArticleController				                    |php artisan make:controller ArticleController
+Une migration create_categories_table			                |php artisan make:migration create_categories_table
+Un seeder ArticleSeeder					                        |php artisan make:seeder ArticleSeeder
+
+_______________________________________________________________________________________________________________________________________________________________
+Exo 4	Partie A — Questions
+1. Quelle commande exécute toutes les migrations en attente ?
+
+php artisan migrate
+
+2. Tu viens de migrer et tu réalises qu'il y a une erreur dans ta dernière migration. Quelle commande annule uniquement la dernière migration exécutée ?
+
+php artisan migrate:rollback
+(Note : Par défaut, elle annule le dernier "batch", c'est-à-dire le dernier groupe de fichiers migrés en même temps).
+
+3. Quelle est la différence entre migrate:rollback et migrate:fresh ?
+
+migrate:rollback : Fait marche arrière. Elle exécute la méthode down() des dernières migrations pour supprimer uniquement les tables ou colonnes récemment ajoutées.
+Elle préserve le reste de la base de données.
+
+migrate:fresh : Supprime radicalement toutes les tables de la base de données (sans exception, même celles qui ne viennent pas de vos migrations),
+puis réexécute l'intégralité des fichiers de migration depuis le début via la méthode up().
+
+4. Quelle commande recrée toutes les tables et peuple la base avec les seeders en une seule étape ?
+
+php artisan migrate:fresh --seed
+
+-------------------------------------------------------
+
+Exo 4	Partie B — Mise en situation
+Scénario 1 — Tu viens d'ajouter une colonne slug à ta migration. La table existe déjà en base (en développement).
+Commande(s) à utiliser : php artisan migrate:fresh (ou php artisan migrate:fresh --seed si tu as des seeders).
+
+Pourquoi ? Comme tu es en phase de développement (et que tu n'as pas de vraies données utilisateurs à protéger),
+c'est le moyen le plus rapide et propre de réinitialiser la structure. Modifier un fichier de migration existant
+et lancer un fresh permet de garder un historique des migrations propre, sans accumuler des dizaines de fichiers de modification pour de simples ajustements.
+
+Scénario 2 — Un collègue te suggère de lancer php artisan migrate:fresh --seed en production. Que lui réponds-tu ?
+Ma réponse : « Surtout pas ! C'est une catastrophe ! »
+
+Pourquoi ? La commande migrate:fresh va supprimer instantanément toutes les tables de la base de données. En production,
+cela signifie effacer définitivement toutes les données réelles des utilisateurs (comptes, articles saisis, commandes, etc.).
+Le --seed ne ferait que remettre de fausses données de test. En production, on utilise exclusivement php artisan migrate pour appliquer les nouveautés
+sans toucher aux données existantes.
+
+----------------------------------------------------
+
+Exo 4	Partie C — Pratique
+
+1. php artisan migrate — Combien de tables ont été créées ?
+En comptant tes fichiers, tu as 5 fichiers de migration (les 3 par défaut de Laravel 11+ pour les utilisateurs, le cache et les jobs,
+ plus tes deux ajouts : articles et categories).
+
+Si tu lances la commande, cela va créer 6 tables dans ton fichier database.sqlite :
+
+users
+
+cache (et cache_locks)
+
+jobs (et potentiellement job_batches, failed_jobs selon le contenu du fichier)
+
+articles
+
+categories
+
+migrations (la table interne que Laravel crée toujours automatiquement pour suivre l'historique)
+
+2. php artisan migrate:rollback — Que s'est-il passé ?
+Si tu viens de faire le migrate juste avant, toutes ces tables ont été regroupées dans le même "batch" (le lot n°1).
+Faire un rollback va donc supprimer toutes ces tables d'un coup (sauf la table migrations qui restera mais se videra).
+
+3. php artisan migrate à nouveau
+Les tables reviennent, mais totalement vides. Tout ce que tu aurais pu tester ou ajouter dedans entre-temps a disparu.
+
+______________________________________________________________________________________________________________________________________________________________________________
+Exo 5	Cache
+Scénario 1 — Modification du .env ignorée
+Cause probable : La configuration a été mise en cache (dans le fichier bootstrap/cache/config.php).
+Laravel lit ce fichier compilé très rapide au lieu de recharger le fichier .env à chaque requête.
+
+Commande à lancer : ```bash
+php artisan config:clear
+
+
+Scénario 2 — Nouvelle route qui renvoie une 404
+Cause probable : Les routes de l'application ont été mises en cache (dans bootstrap/cache/routes-v7.php).
+Laravel ne cherche que dans sa "liste figée" et ne voit pas ta nouvelle ligne dans web.php.
+
+Commande à lancer : ```bash
+php artisan route:clear
+
+Scénario 3 — Projet bloqué / Repartir de zéro
+Pour tout nettoyer d'un coup (configuration, routes, vues compilées et données de l'application), voici l'ordre idéal des commandes :
+
+php artisan config:clear (Nettoie la configuration)
+
+php artisan route:clear (Nettoie les routes)
+
+php artisan view:clear (Nettoie les fichiers de vues Blade compilés)
+
+php artisan cache:clear (Nettoie le cache global de l'application)
+
+
+Question de synthèse
+En quoi vider les caches est-il différent de redémarrer le serveur (Ctrl+C + php artisan serve) ? Les deux ont-ils le même effet ?
+
+Non, ils n'ont pas du tout le même effet.
+
+Redémarrer le serveur (php artisan serve) : Cela coupe et relance simplement le mini-serveur web PHP sur ta machine. Cela libère la mémoire vive (RAM)
+et recharge le processus PHP, mais cela ne touche pas aux fichiers stockés sur ton disque dur.
+
+Vider les caches Laravel : Laravel écrit ses caches sous forme de fichiers physiques dans le dossier bootstrap/cache/ et storage/framework/cache/.
+Comme ce sont des fichiers écrits sur ton disque, ils survivent au redémarrage du serveur.
+Même si tu éteins ton ordinateur, ces caches restent là tant que tu ne lances pas une commande clear pour les supprimer physiquement.
