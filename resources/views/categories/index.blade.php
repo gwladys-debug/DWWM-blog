@@ -32,11 +32,7 @@
                 </tr>
             </thead>
             <tbody>
-                <!--
-                    C'est ici qu'on utilise le foreach !
-                    $categories provient de ton CategoryController (via le compact)
-                    $category représente une seule ligne (un enregistrement) à chaque tour
-                -->
+
                 @foreach ($categories as $category)
                     <tr>
                         <td>{{ $category->id }}</td>
