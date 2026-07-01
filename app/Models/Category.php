@@ -17,9 +17,6 @@ class Category extends Model
 
     /**
      * Relation avec les Articles.
-     * Dans ton SQL : id_category dans la table articles fait référence à categories(id).
-     * Comme la clé étrangère s'appelle 'id_category' (et non 'category_id'),
-     * il faut obligatoirement le préciser à Laravel comme ceci :
      */
     public function articles()
     {
