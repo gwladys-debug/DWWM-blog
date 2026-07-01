@@ -14,13 +14,5 @@ class Category extends Model
         'name',
         'slug',
     ];
-
-    /**
-     * Relation avec les Articles.
-     */
-    public function articles()
-    {
-        return $this->hasMany(Article::class, 'id_category');
-    }
 }
 
