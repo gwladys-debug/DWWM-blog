@@ -7,12 +7,18 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Category extends Model
 {
-    use HasFactory;
+    protected $table = 'categories';
+    public function articles()
+    {
+        return $this->hasMany(Article::class);
+    }
 
-    // Seuls les champs que l'utilisateur ou le code va remplir
-    protected $fillable = [
-        'name',
-        'slug',
-    ];
-}
+//     use HasFactory;
+
+//     // Seuls les champs que l'utilisateur ou le code va remplir
+//     protected $fillable = [
+//         'name',
+//         'slug',
+//     ];
+ }
 
