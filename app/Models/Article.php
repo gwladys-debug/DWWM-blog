@@ -8,11 +8,15 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Article extends Model
 {
     protected $table = 'articles';
-
-    public function user() : BelongsTo
+    public function category() : BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Category::class);
     }
+
+     public function user() : BelongsTo
+     {
+         return $this->belongsTo(User::class);
+     }
 
 
 }
