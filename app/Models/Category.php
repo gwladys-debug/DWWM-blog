@@ -13,12 +13,12 @@ class Category extends Model
         return $this->hasMany(Article::class);
     }
 
-//     use HasFactory;
+     use HasFactory;
 
-//     // Seuls les champs que l'utilisateur ou le code va remplir
-//     protected $fillable = [
-//         'name',
-//         'slug',
-//     ];
+     // Seuls les champs que l'utilisateur ou le code va remplir
+     protected $fillable = [
+         'name',
+         'slug',
+     ];
  }
 
