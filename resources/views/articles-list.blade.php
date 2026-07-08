@@ -14,7 +14,8 @@
         <div>
             <h2>{{ $article->title }}</h2>
             <p>{{ $article->content }}</p>
-            <p>{{ $article->user->name }}</p>
+            <p>Catégorie : {{ $article->category->name }}</p>
+            <p>Auteur : {{ $article->user->name }}</p>
         </div>
     @endforeach
 </body>
