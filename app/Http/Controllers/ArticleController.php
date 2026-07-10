@@ -28,4 +28,15 @@ class ArticleController extends Controller
 
         return view('articles-list-admin', compact('articles'));
     }
+    /**
+     * Voir le détail d'un article spécifique (Écran 2 - Visiteur)
+     */
+    public function show(string $id)
+    {
+        // 1. On récupère l'article précis par son ID ou on renvoie une erreur 404 si introuvable
+        $article = Article::with(['category', 'user'])->findOrFail($id);
+
+        // 2. On retourne la vue "article-show" en lui passant les données de l'article
+        return view('article-show', compact('article'));
+    }
 }
