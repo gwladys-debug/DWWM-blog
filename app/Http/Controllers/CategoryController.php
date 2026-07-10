@@ -16,7 +16,7 @@ class CategoryController extends Controller
         $categories = Category::withCount('articles')->get();
 
         // 2. On retourne la vue en lui passant les catégories
-        return view('category-list', compact('categories'));
+        return view('categories.category-list', compact('categories'));
     }
 
     /**
