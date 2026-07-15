@@ -31,14 +31,8 @@
         </tbody>
     </table>
 
-    <div class="flex justify-center items-center gap-5 mt-5">
-        <button
-            class="bg-black text-white border-none px-4 py-2 text-xs font-semibold cursor-pointer hover:bg-zinc-800 transition-colors">-
-            Précédent</button>
-        <span class="text-xs text-gray-700">Page 1/2</span>
-        <button
-            class="bg-black text-white border-none px-4 py-2 text-xs font-semibold cursor-pointer hover:bg-zinc-800 transition-colors">Suivant
-            -</button>
+    <div class="mt-8 flex justify-center">
+        {{ $articles->links() }}
     </div>
 
 @endsection

@@ -2,7 +2,8 @@
 
     <div class="flex justify-between items-center text-sm text-gray-500 mb-2">
         <span class="font-medium text-black">[ {{ $article->category->name }} ] [ Tag 1 ]</span>
-        <span class="text-xs">{{ $article->created_at->format('d M. Y') }}</span>
+        <span
+            class="text-xs">{{ $article->published_at ? $article->published_at->format('d/m/Y') : 'Non publié' }}</span>
     </div>
 
     <h2 class="text-xl font-bold mb-2 text-black">{{ $article->title }}</h2>
