@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Article;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class ArticleController extends Controller
 {
@@ -31,7 +32,7 @@ class ArticleController extends Controller
     /**
      * Voir le détail d'un article spécifique (Écran 2 - Visiteur)
      */
-    public function show(string $id)
+    public function show(string $id) : View
     {
         // 1. On récupère l'article précis par son ID ou on renvoie une erreur 404 si introuvable
         $article = Article::with(['category', 'user'])->findOrFail($id);
