@@ -15,4 +15,6 @@ Route::get('/categories', [CategoryController::class, 'index']);
 
 Route::get('/admin/articles', [ArticleController::class, 'adminIndex']);
 
-Route::get('/articles/{id}', [ArticleController::class, 'show'])->name('articles.show');
+//Route::get('/articles/{id}', [ArticleController::class, 'show'])->name('articles.show');
+
+Route::get('/articles/{article}', [ArticleController::class, 'show'])->name('articles.show');

@@ -16,7 +16,7 @@
     <h1 class="text-4xl font-bold text-black mb-1">{{ $article->title }}</h1>
 
     <div class="text-xs text-gray-500 mb-4">
-        Par {{ $article->user->name ?? 'Édith Orial' }} · {{ $article->created_at->format('d jan. Y') }}
+        Par {{ $article->user->name ?? 'Édith Orial' }} · {{ $article->created_at->format('d M Y') }}
     </div>
 
     <hr class="border-gray-300 my-6">

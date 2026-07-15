@@ -17,7 +17,8 @@
 
     <div class="flex flex-col gap-5 mb-10">
         @foreach ($articles as $article)
-            <x-article :article="$article" />
+        <x-article :article="$article" />
+
         @endforeach
     </div>
 
