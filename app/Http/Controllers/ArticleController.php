@@ -12,7 +12,7 @@ class ArticleController extends Controller
         public function index()
             {
             // On récupère les articles en chargeant directement la catégorie et l'auteur associés
-                $articles = Article::with(['category', 'user'])->paginate(10); // Pagination de 10 articles par page
+                $articles = Article::with(['category', 'user'])->paginate(9); // Pagination de 10 articles par page
 
          return view('articles-list', compact('articles'));
             }

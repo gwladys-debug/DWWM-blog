@@ -10,11 +10,12 @@ Route::get('/', function () {
 });
 
 Route::get('/articles', [ArticleController::class, 'index']);
+Route::get('/articles/{slug}', [ArticleController::class, 'show'])->name('articles.show');
+
 
 Route::get('/categories', [CategoryController::class, 'index']);
 
 Route::get('/admin/articles', [ArticleController::class, 'adminIndex']);
 
-Route::get('/articles/{slug}', [ArticleController::class, 'show'])->name('articles.show');
 
-//Route::get('/articles/{article}', [ArticleController::class, 'show'])->name('articles.show');
+
