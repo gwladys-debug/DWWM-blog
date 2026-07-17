@@ -39,60 +39,48 @@ class ArticleController extends Controller
             }
 
     /**
-     * 1. Afficher le formulaire de création (Écran 5)
+     * 2. Enregistrer un nouvel article en base de données
      */
-        public function create()
-            {
-                $categories = Category::all();
-                $tags = Tag::all(); // On récupère aussi les tags pour la sélection multiple
+    public function store(Request $request)
+    {
+        // Validation des données du formulaire
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'slug' => 'required|string|max:100|unique:articles,slug',
+            'content' => 'required|string',
+            'category_id' => 'required|exists:categories,id',
+            'status' => 'required|in:DRAFT,PUBLISHED',
+            'tags' => 'nullable|array',
+            'tags.*' => 'exists:tags,id',
+        ]);
 
-                return view('articles-create', compact('categories', 'tags'));
-            }
+        // On crée l'article
+        $article = new Article();
+        $article->title = $validated['title'];
+        // On s'assure que le slug est bien formaté au cas où
+        $article->slug = Str::slug($validated['slug']);
+        $article->content = $validated['content'];
+        $article->status = $validated['status'];
+        $article->category_id = $validated['category_id'];
 
-/**
- * 2. Enregistrer un nouvel article en base de données
- */
-        public function store(Request $request)
-            {
-    // Validation des données du formulaire
-            $validated = $request->validate([
-                'title' => 'required|string|max:255',
-                'slug' => 'required|string|max:100|unique:articles,slug',
-                'content' => 'required|string',
-                'category_id' => 'required|exists:categories,id',
-                'status' => 'required|in:DRAFT,PUBLISHED',
-                'tags' => 'nullable|array',
-                'tags.*' => 'exists:tags,id',
-            ]);
+        // Correction ici : on utilise user_id (nom exact de la colonne en base de données)
+        $article->user_id = \Illuminate\Support\Facades\Auth::id() ?? 1;
 
-    // On crée l'article
-            $article = new Article();
-            $article->title = $validated['title'];
-            // On s'assure que le slug est bien formaté au cas où
-            $article->slug = Str::slug($validated['slug']);
-            $article->content = $validated['content'];
-            $article->status = $validated['status'];
-            $article->category_id = $validated['category_id'];
-
-    // Pour l'auteur (id_user), on prend l'ID de l'administrateur connecté
-    // Si l'authentification n'est pas encore en place, tu peux mettre temporairement : Auth::id() ?? 1
-            $article->id_user = \Illuminate\Support\Facades\Auth::id() ?? 1;
-
-            // Gestion de la date de publication selon le statut choisi[cite: 1]
-            if ($validated['status'] === 'PUBLISHED') {
-                $article->published_at = now();
-            }
-
-            $article->save();
-
-            // Association des tags dans la table pivot articles_tags[cite: 1]
-            if (!empty($validated['tags'])) {
-                $article->tags()->sync($validated['tags']);
-            }
-
-            return redirect()->route('admin.articles.index')
-                ->with('success', 'L\'article a bien été créé !');
+        // Gestion de la date de publication selon le statut choisi
+        if ($validated['status'] === 'PUBLISHED') {
+            $article->published_at = now();
         }
+
+        $article->save();
+
+        // Association des tags dans la table pivot articles_tags
+        if (!empty($validated['tags'])) {
+            $article->tags()->sync($validated['tags']);
+        }
+
+        return redirect()->route('admin.articles.index')
+            ->with('success', 'L\'article a bien été créé !');
+    }
 
         /**
          * 3. Afficher le formulaire d'édition avec les données existantes (Écran 5 pré-rempli)
@@ -130,7 +118,7 @@ class ArticleController extends Controller
             $article->title = $validated['title'];
             $article->slug = Str::slug($validated['slug']);
             $article->content = $validated['content'];
-            $article->id_category = $validated['id_category'];
+            $article->category_id = $validated['category_id'];
 
             // Si l'article passe de Brouillon à Publié, on met à jour la date de publication[cite: 1]
             if ($validated['status'] === 'PUBLISHED' && $article->status !== 'PUBLISHED') {
