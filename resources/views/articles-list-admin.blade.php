@@ -8,7 +8,7 @@
             <h1 class="text-3xl font-bold m-0 text-black">Articles</h1>
             <span class="text-xs font-semibold uppercase tracking-wider text-gray-400">[ Mode Admin ]</span>
         </div>
-        <a href="#"
+        <a href="{{ route('admin.articles.create') }}"
             class="bg-black text-white border border-black px-4 py-2 text-xs font-semibold uppercase tracking-wide no-underline hover:bg-zinc-800 transition-colors">
             + Nouvel article
         </a>
