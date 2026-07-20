@@ -12,8 +12,11 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $categories = Category::all();
-        return view('categories.index', compact('categories'));
+        // 1. On récupère toutes les catégories de la table SQL
+        $categories = Category::withCount('articles')->get();
+
+        // 2. On retourne la vue en lui passant les catégories
+        return view('categories.category-list', compact('categories'));
     }
 
     /**
