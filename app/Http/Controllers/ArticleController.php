@@ -151,14 +151,12 @@ class ArticleController extends Controller
     /**
      * 5. Supprimer un article (Écran 6)
      */
-    public function destroy(string $slug)
+    public function destroy(int $id)
     {
-        $article = Article::where('slug', $slug)->firstOrFail();
-
-        // On le supprime
+        $article = Article::findOrFail($id);
         $article->delete();
 
         return redirect()->route('admin.articles.index')
-            ->with('success', 'L\'article a bien été supprimé !');
+            ->with('success', 'L\'article a été supprimé avec succès !');
     }
 }
