@@ -20,7 +20,7 @@ class ArticleController extends Controller
     {
         $articles = Article::with(['category', 'user'])->paginate(9);
 
-        return view('articles-list', compact('articles'));
+        return view('articles.articles-list', compact('articles'));
     }
 
     /**
@@ -35,7 +35,7 @@ class ArticleController extends Controller
         // ou on la nomme index() si c'est la ressource principale.
         $articles = Article::with(['category', 'user'])->latest()->paginate(7);
 
-        return view('articles-list-admin', compact('articles'));
+        return view('articles.articles-list-admin', compact('articles'));
     }
 
     /**
@@ -46,7 +46,7 @@ class ArticleController extends Controller
     {
         $article = Article::with(['category', 'user'])->where('slug', $slug)->firstOrFail();
 
-        return view('article-show', compact('article'));
+        return view('articles.article-show', compact('article'));
     }
 
     /**
@@ -58,7 +58,7 @@ class ArticleController extends Controller
         $categories = Category::all();
         $tags = Tag::all();
 
-        return view('articles-create', compact('categories', 'tags'));
+        return view('articles.articles-create', compact('categories', 'tags'));
     }
 
     /**
@@ -110,7 +110,7 @@ class ArticleController extends Controller
         $categories = Category::all();
         $tags = Tag::all();
 
-        return view('articles-create', compact('article', 'categories', 'tags'));
+        return view('articles.articles-create', compact('article', 'categories', 'tags'));
     }
 
     /**
