@@ -11,12 +11,11 @@ Route::get('/', function () {
 
 // --- ESPACE ARTICLES VISITEUR ---
 
-Route::get('/articles', [ArticleController::class, 'publicIndex'])->name('articles.index');
+Route::get('/articles', [ArticleController::class, 'publicIndex'])->name('articles.publicIndex');
 Route::get('/articles/{slug}', [ArticleController::class, 'show'])->name('articles.show');
 
 // --- ESPACE CATEGORIES ---
-Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
-
+Route::resource('categories', CategoryController::class);
 
 // --- ESPACE ADMINISTRATION (Route Ressource) ---
 // Cette ligne remplace les 6 routes d'administration précédentes !
