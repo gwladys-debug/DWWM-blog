@@ -4,10 +4,12 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\Auth\RegisterController;
 
 Route::get('/', function () {
     return view('home');
-});
+})->name('home');
+
 
 // --- ESPACE ARTICLES VISITEUR ---
 
@@ -45,6 +47,6 @@ Route::delete('/admin/articles/{id}', [ArticleController::class, 'destroy'])->na
 // --- ESPACE LOGIN ---
 // Inscription (Accessible uniquement aux invités / non-connectés)
 Route::middleware('guest')->group(function () {
-    Route::get('/inscription', [App\Http\Controllers\Auth\RegisterController::class, 'create'])->name('register');
-    Route::post('/inscription', [App\Http\Controllers\Auth\RegisterController::class, 'store']);
+    Route::get('/register', [RegisterController::class, 'create'])->name('register');
+    Route::post('/register', [RegisterController::class, 'store'])->name('register.store');
 });
