@@ -14,8 +14,11 @@ Route::get('/', function () {
 Route::get('/articles', [ArticleController::class, 'index'])->name('articles.index');
 Route::get('/articles/{slug}', [ArticleController::class, 'show'])->name('articles.show');
 
+
 // --- ESPACE CATEGORIES ---
 Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
+Route::get('/categories/create', [CategoryController::class, 'create'])->name('admin.categories.create');
+
 
 
 // --- ESPACE ADMINISTRATION ARTICLES ---
@@ -37,3 +40,11 @@ Route::put('/admin/articles/{slug}', [ArticleController::class, 'update'])->name
 
 // 6. Action de suppression de l'article (Écran 6)
 Route::delete('/admin/articles/{id}', [ArticleController::class, 'destroy'])->name('admin.articles.destroy');
+
+
+// --- ESPACE LOGIN ---
+// Inscription (Accessible uniquement aux invités / non-connectés)
+Route::middleware('guest')->group(function () {
+    Route::get('/inscription', [App\Http\Controllers\Auth\RegisterController::class, 'create'])->name('register');
+    Route::post('/inscription', [App\Http\Controllers\Auth\RegisterController::class, 'store']);
+});
