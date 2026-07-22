@@ -16,11 +16,22 @@ class ArticleController extends Controller
      * Liste des articles pour la vue PUBLIQUE / VISITEUR
      * Route : GET /articles
      */
-    public function publicIndex()
+    public function publicIndex(Request $request)
     {
-        $articles = Article::with(['category', 'user'])->paginate(9);
+        $categoryId = $request->query('category');
 
-        return view('articles.articles-list', compact('articles'));
+        $articles = Article::with(['category', 'user'])
+            ->when($categoryId, function ($query, $categoryId) {
+                return $query->where('category_id', $categoryId);
+            })
+            ->where('status', 'PUBLISHED') // Optionnel : ne montrer que les articles publiés en public
+            ->latest()
+            ->paginate(9)
+            ->withQueryString(); // Garde le paramètre ?category=X lors de la pagination !
+
+        $categories = Category::all();
+
+        return view('articles.articles-list', compact('articles', 'categories', 'categoryId'));
     }
 
     /**
