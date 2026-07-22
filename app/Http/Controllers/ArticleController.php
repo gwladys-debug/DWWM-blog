@@ -48,7 +48,7 @@ class ArticleController extends Controller
         $categories = Category::all();
         $tags = Tag::all(); // On récupère les tags pour la sélection multiple
 
-        return view('articles-create', compact('categories', 'tags'));
+        return view('articles.articles-create', compact('articles', 'categories', 'tags'));
     }
 
     /**
