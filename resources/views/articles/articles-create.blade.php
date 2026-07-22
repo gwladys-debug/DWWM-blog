@@ -45,7 +45,7 @@
                 <select name="category_id" id="category_id"
                     class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:border-blue-300"
                     required>
-                    <option value="">Sélectionner une catégorie</option>
+                    <option value="">Choisir une catégorie</option>
                     @foreach ($categories as $category)
                         <option value="{{ $category->id }}"
                             {{ old('category_id', $article->category_id ?? '') == $category->id ? 'selected' : '' }}>
@@ -53,6 +53,9 @@
                         </option>
                     @endforeach
                 </select>
+                @error('category_id')
+                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                @enderror
             </div>
 
             <!-- Choix des Tags -->
