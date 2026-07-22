@@ -3,20 +3,20 @@
 @section('content')
     <div class="max-w-3xl mx-auto my-8 p-6 bg-white rounded-lg shadow-md">
 
-        <!-- Bouton Retour à la liste (Maquette Écran 5) -->
+        <!-- Bouton Retour à la liste -->
         <div class="mb-4">
             <a href="{{ route('admin.articles.index') }}" class="text-blue-600 hover:text-blue-800 text-sm font-semibold">
                 ← Retour à la liste
             </a>
         </div>
 
-        <!-- Titre dynamique selon le contexte (Création ou Édition) -->
+        <!-- Titre dynamique selon le contexte -->
         <h1 class="text-2xl font-bold mb-6 text-gray-800">
             {{ isset($article) ? 'Modifier l\'article' : 'Créer un nouvel article' }}
         </h1>
 
-        <!-- Formulaire dynamique : POST pour la création, PUT pour la modification -->
-        <form action="{{ isset($article) ? route('admin.articles.update', $article->slug) : route('admin.articles.store') }}"
+        <!-- Formulaire dynamique : Passe désormais l'ID en cas de modification -->
+        <form action="{{ isset($article) ? route('admin.articles.update', $article->id) : route('admin.articles.store') }}"
             method="POST">
             @csrf
             @if (isset($article))
@@ -31,7 +31,7 @@
                     required>
             </div>
 
-            <!-- Champ Slug (S'auto-remplit normalement ou manuellement) -->
+            <!-- Champ Slug -->
             <div class="mb-4">
                 <label for="slug" class="block text-gray-700 font-bold mb-2">Slug (URL de l'article) *</label>
                 <input type="text" name="slug" id="slug" value="{{ old('slug', $article->slug ?? '') }}"
@@ -39,7 +39,7 @@
                     required>
             </div>
 
-            <!-- Choix de la Catégorie (Sélection unique) -->
+            <!-- Choix de la Catégorie -->
             <div class="mb-4">
                 <label for="category_id" class="block text-gray-700 font-bold mb-2">Catégorie *</label>
                 <select name="category_id" id="category_id"
@@ -55,7 +55,7 @@
                 </select>
             </div>
 
-            <!-- Choix des Tags (Sélection multiple) -->
+            <!-- Choix des Tags -->
             <div class="mb-4">
                 <label for="tags" class="block text-gray-700 font-bold mb-2">Tags</label>
                 <select name="tags[]" id="tags"
@@ -79,7 +79,7 @@
                     required>{{ old('content', $article->content ?? '') }}</textarea>
             </div>
 
-            <!-- Statut de l'article (Brouillon / Publié) -->
+            <!-- Statut de l'article -->
             <div class="mb-6">
                 <span class="block text-gray-700 font-bold mb-2">Statut *</span>
                 <div class="flex items-center space-x-4">

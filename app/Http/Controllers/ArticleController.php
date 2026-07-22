@@ -3,60 +3,87 @@
 namespace App\Http\Controllers;
 
 use App\Models\Article;
-use Illuminate\Http\Request;
-use Illuminate\View\View;
 use App\Models\Category;
 use App\Models\Tag;
+use Illuminate\Http\Request;
+use Illuminate\View\View;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Auth;
 
 class ArticleController extends Controller
 {
-    /**    Liste des articles (Vue Visiteur)    */
-    public function index()
+    /**
+     * Liste des articles pour la vue PUBLIQUE / VISITEUR
+     * Route : GET /articles
+     */
+    public function publicIndex(Request $request)
     {
-        // On récupère les articles en chargeant directement la catégorie et l'auteur associés
-        $articles = Article::with(['category', 'user'])->paginate(9);
+        $categoryId = $request->query('category');
 
-        return view('articles-list', compact('articles'));
-    }
+        $articles = Article::with(['category', 'user'])
+            ->when($categoryId, function ($query, $categoryId) {
+                return $query->where('category_id', $categoryId);
+            })
+            ->where('status', 'PUBLISHED') // Optionnel : ne montrer que les articles publiés en public
+            ->latest()
+            ->paginate(9)
+            ->withQueryString(); // Garde le paramètre ?category=X lors de la pagination !
 
-    /** Liste des articles (Vue Admin)        */
-    public function adminIndex()
-    {
-        // On récupère les mêmes données, mais on les enverra à la vue admin
-        $articles = Article::with(['category', 'user'])->latest()->paginate(7);
+        $categories = Category::all();
 
-        return view('articles-list-admin', compact('articles'));
-    }
-
-    /** Voir le détail d'un article spécifique (Écran 2 - Visiteur) */
-    public function show(string $slug): View
-    {
-        // 1. On récupère l'article précis par son slug ou on renvoie une erreur 404 si introuvable
-        $article = Article::with(['category', 'user'])->where('slug', $slug)->firstOrFail();
-
-        // 2. On retourne la vue "article-show" en lui passant les données de l'article
-        return view('article-show', compact('article'));
+        return view('articles.articles-list', compact('articles', 'categories', 'categoryId'));
     }
 
     /**
-     * 1. Afficher le formulaire de création (Écran 5)
-     * (C'est cette méthode qui manquait et causait l'erreur 500 !)
+     * Liste des articles pour l'ADMINISTRATION
+     * Route Ressource : GET /admin/articles
+     */
+    public function index(Request $request)
+    {
+        $categoryId = $request->query('category');
+
+        $articles = Article::with(['category', 'user'])
+            ->when($categoryId, function ($query, $categoryId) {
+                return $query->where('category_id', $categoryId);
+            })
+            ->latest()
+            ->paginate(7)
+            ->withQueryString();
+
+        $categories = Category::all();
+
+        return view('articles.articles-list-admin', compact('articles', 'categories', 'categoryId'));
+    }
+
+    /**
+     * Voir le détail d'un article spécifique (Visiteur par Slug)
+     * Route : GET /articles/{slug}
+     */
+    public function show(string $slug): View
+    {
+        $article = Article::with(['category', 'user'])->where('slug', $slug)->firstOrFail();
+
+        return view('articles.article-show', compact('article'));
+    }
+
+    /**
+     * 1. Afficher le formulaire de création (Admin)
+     * Route Ressource : GET /admin/articles/create
      */
     public function create()
     {
         $categories = Category::all();
-        $tags = Tag::all(); // On récupère les tags pour la sélection multiple
+        $tags = Tag::all();
 
-        return view('articles-create', compact('categories', 'tags'));
+        return view('articles.articles-create', compact('categories', 'tags'));
     }
 
     /**
-     * 2. Enregistrer un nouvel article en base de données
+     * 2. Enregistrer un nouvel article en BDD (Admin)
+     * Route Ressource : POST /admin/articles
      */
     public function store(Request $request)
     {
-        // Validation des données du formulaire
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'slug' => 'required|string|max:100|unique:articles,slug',
@@ -67,25 +94,20 @@ class ArticleController extends Controller
             'tags.*' => 'exists:tags,id',
         ]);
 
-        // On crée l'article
         $article = new Article();
         $article->title = $validated['title'];
         $article->slug = Str::slug($validated['slug']);
         $article->content = $validated['content'];
         $article->status = $validated['status'];
         $article->category_id = $validated['category_id'];
+        $article->user_id = Auth::id() ?? 1;
 
-        // Utilisation de la colonne user_id (alignée avec la base de données)
-        $article->user_id = \Illuminate\Support\Facades\Auth::id() ?? 1;
-
-        // Gestion de la date de publication selon le statut choisi
         if ($validated['status'] === 'PUBLISHED') {
             $article->published_at = now();
         }
 
         $article->save();
 
-        // Association des tags dans la table pivot articles_tags
         if (!empty($validated['tags'])) {
             $article->tags()->sync($validated['tags']);
         }
@@ -95,26 +117,25 @@ class ArticleController extends Controller
     }
 
     /**
-     * 3. Afficher le formulaire d'édition avec les données existantes (Écran 5 pré-rempli)
+     * 3. Afficher le formulaire d'édition par ID (Admin)
+     * Route Ressource : GET /admin/articles/{article}/edit
      */
-    public function edit(string $slug)
+    public function edit(Article $article)
     {
-        // On cherche l'article par son slug avec ses relations
-        $article = Article::with('tags')->where('slug', $slug)->firstOrFail();
+        // Laravel récupère automatiquement l'article par son ID !
+        $article->load('tags');
         $categories = Category::all();
         $tags = Tag::all();
 
-        return view('articles-create', compact('article', 'categories', 'tags'));
+        return view('articles.articles-create', compact('article', 'categories', 'tags'));
     }
 
     /**
-     * 4. Mettre à jour l'article édité en base de données
+     * 4. Mettre à jour l'article en BDD par ID (Admin)
+     * Route Ressource : PUT /admin/articles/{article}
      */
-    public function update(Request $request, string $slug)
+    public function update(Request $request, Article $article)
     {
-        $article = Article::where('slug', $slug)->firstOrFail();
-
-        // Validation
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'slug' => 'required|string|max:100|unique:articles,slug,' . $article->id,
@@ -125,13 +146,11 @@ class ArticleController extends Controller
             'tags.*' => 'exists:tags,id',
         ]);
 
-        // Mise à jour des champs
         $article->title = $validated['title'];
         $article->slug = Str::slug($validated['slug']);
         $article->content = $validated['content'];
         $article->category_id = $validated['category_id'];
 
-        // Si l'article passe de Brouillon à Publié, on met à jour la date de publication
         if ($validated['status'] === 'PUBLISHED' && $article->status !== 'PUBLISHED') {
             $article->published_at = now();
         } elseif ($validated['status'] === 'DRAFT') {
@@ -141,7 +160,6 @@ class ArticleController extends Controller
         $article->status = $validated['status'];
         $article->save();
 
-        // Synchronisation des tags
         $article->tags()->sync($validated['tags'] ?? []);
 
         return redirect()->route('admin.articles.index')
@@ -149,11 +167,12 @@ class ArticleController extends Controller
     }
 
     /**
-     * 5. Supprimer un article (Écran 6)
+     * 5. Supprimer un article par ID (Admin)
+     * Route Ressource : DELETE /admin/articles/{article}
      */
-    public function destroy(int $id)
+    public function destroy(Article $article)
     {
-        $article = Article::findOrFail($id);
+        // Laravel trouve l'article par son ID et le supprime directement
         $article->delete();
 
         return redirect()->route('admin.articles.index')

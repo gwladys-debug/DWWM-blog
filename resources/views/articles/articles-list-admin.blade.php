@@ -14,6 +14,13 @@
         </a>
     </div>
 
+    {{-- Message de confirmation après suppression ou création --}}
+    @if (session('success'))
+        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-6 text-sm">
+            {{ session('success') }}
+        </div>
+    @endif
+
     <table class="w-full border-collapse mb-10">
         <thead>
             <tr class="border-b-2 border-black">
