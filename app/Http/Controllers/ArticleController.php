@@ -38,15 +38,21 @@ class ArticleController extends Controller
      * Liste des articles pour l'ADMINISTRATION
      * Route Ressource : GET /admin/articles
      */
-    public function index()
+    public function index(Request $request)
     {
-        // Si tu utilises Route::resource('admin/articles', ...),
-        // Laravel appelle par défaut la méthode index().
-        // Pour séparer la vue admin, on utilise cette méthode si ta route est personnalisée,
-        // ou on la nomme index() si c'est la ressource principale.
-        $articles = Article::with(['category', 'user'])->latest()->paginate(7);
+        $categoryId = $request->query('category');
 
-        return view('articles.articles-list-admin', compact('articles'));
+        $articles = Article::with(['category', 'user'])
+            ->when($categoryId, function ($query, $categoryId) {
+                return $query->where('category_id', $categoryId);
+            })
+            ->latest()
+            ->paginate(7)
+            ->withQueryString();
+
+        $categories = Category::all();
+
+        return view('articles.articles-list-admin', compact('articles', 'categories', 'categoryId'));
     }
 
     /**
