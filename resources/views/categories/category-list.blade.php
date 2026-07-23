@@ -4,7 +4,7 @@
 
     <div class="flex justify-between items-center mb-7">
         <h1 class="text-3xl font-bold m-0 text-slate-900">Catégories</h1>
-        <a href="#"
+        <a href="{{ route('admin.categories.create') }}"
             class="bg-black text-white border border-black px-5 py-2.5 text-xs font-bold uppercase tracking-wider no-underline hover:bg-zinc-800 transition-colors">
             + Nouvelle catégorie
         </a>
@@ -35,5 +35,10 @@
             @endforeach
         </tbody>
     </table>
+
+    {{-- Liens de pagination ajoutés ici --}}
+    <div class="mt-8 flex justify-center">
+        {{ $categories->links() }}
+    </div>
 
 @endsection
