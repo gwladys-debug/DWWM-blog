@@ -46,7 +46,7 @@ Route::delete('/admin/articles/{id}', [ArticleController::class, 'destroy'])->na
 
 // --- ESPACE LOGIN ---
 // Inscription (Accessible uniquement aux invités / non-connectés)
-Route::middleware('guest')->group(function () {
+// Route::middleware('guest')->group(function () {
     Route::get('/register', [RegisterController::class, 'create'])->name('register');
     Route::post('/register', [RegisterController::class, 'store'])->name('register.store');
-});
+// });
