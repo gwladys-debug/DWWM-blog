@@ -65,7 +65,7 @@ class ArticleController extends Controller
         $categories = Category::all();
         $tags = Tag::all();
 
-        return view('articles.articles-create', compact('categories', 'tags'));
+        return view('articles.articles.articles-create', compact('categories', 'tags'));
     }
 
     /**

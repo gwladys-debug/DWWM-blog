@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use App\Models\Category;
 use Illuminate\Support\Str;
 
-
 class CategoryController extends Controller
 {
     /**
