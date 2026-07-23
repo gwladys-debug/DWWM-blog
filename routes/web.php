@@ -20,8 +20,7 @@ Route::get('/articles/{slug}', [ArticleController::class, 'show'])->name('articl
 // --- ESPACE CATEGORIES ---
 Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
 Route::get('/categories/create', [CategoryController::class, 'create'])->name('admin.categories.create');
-
-
+Route::post('/categories', [CategoryController::class, 'store'])->name('admin.categories.store');
 
 // --- ESPACE ADMINISTRATION ARTICLES ---
 

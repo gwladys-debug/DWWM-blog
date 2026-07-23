@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Category;
 use Illuminate\Support\Str;
 
+
 class CategoryController extends Controller
 {
     /**
@@ -13,8 +14,8 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        // 1. On récupère toutes les catégories de la table SQL avec le nombre d'articles
-        $categories = Category::withCount('articles')->paginate(10);
+        // 1. On récupère toutes les catégories de la table SQL
+        $categories = Category::withCount('articles')->paginate(2);
 
         // 2. On retourne la vue en lui passant les catégories
         return view('categories.category-list', compact('categories'));
