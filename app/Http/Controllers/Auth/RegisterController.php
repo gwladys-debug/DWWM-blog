@@ -43,7 +43,7 @@ class RegisterController extends Controller
         Auth::login($user);
 
         // Redirection vers la liste des articles avec message de succès
-        return redirect()->route('articles.index')
+        return redirect()->route('articles.publicIndex')
             ->with('success', 'Bienvenue ! Votre compte a été créé avec succès.');
     }
 }

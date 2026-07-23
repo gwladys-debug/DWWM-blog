@@ -27,14 +27,14 @@
         </p>
 
         <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <a href="{{ route('articles.index') }}"
+            <a href="{{ route('admin.articles.index') }}"
                 class="w-full sm:w-auto px-6 py-3 bg-slate-900 text-white font-medium text-sm rounded-lg hover:bg-slate-800 transition">
                 Découvrir les articles
             </a>
 
-            <a href="{{ route('register') }}"
+            <a href="{{ route('login.create') }}"
                 class="w-full sm:w-auto px-6 py-3 bg-white text-slate-700 font-medium text-sm rounded-lg border border-slate-300 hover:bg-slate-50 transition">
-                Créer un compte
+                Se connecter
             </a>
         </div>
     </div>
