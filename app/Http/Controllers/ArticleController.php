@@ -24,19 +24,19 @@ class ArticleController extends Controller
     public function adminIndex()
     {
         // On récupère les mêmes données, mais on les enverra à la vue admin
-        $articles = Article::with(['category', 'user'])->latest()->paginate(7);
+        $articles = Article::with(['category', 'user'])->latest()->paginate(6);
 
         return view('articles-list-admin', compact('articles'));
     }
 
     /** Voir le détail d'un article spécifique (Écran 2 - Visiteur) */
-    public function show(string $slug): View
+    public function show(string $slug)
     {
         // 1. On récupère l'article précis par son slug ou on renvoie une erreur 404 si introuvable
         $article = Article::with(['category', 'user'])->where('slug', $slug)->firstOrFail();
 
         // 2. On retourne la vue "article-show" en lui passant les données de l'article
-        return view('article-show', compact('article'));
+        return view('articles.show', compact('article'));
     }
 
     /**
@@ -48,7 +48,7 @@ class ArticleController extends Controller
         $categories = Category::all();
         $tags = Tag::all(); // On récupère les tags pour la sélection multiple
 
-        return view('articles.articles-create', compact('articles', 'categories', 'tags'));
+        return view('articles.articles-create', compact('categories', 'tags'));
     }
 
     /**
