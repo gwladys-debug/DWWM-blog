@@ -3,11 +3,11 @@
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\ArticleController;
-use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\CategoryController as CategoryController;
 
-use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\Auth\RegisterController as RegisterController;
 
-use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\LoginController as LoginController;
 // use App\Http\Controllers\Auth\LogoutController;
 
 
