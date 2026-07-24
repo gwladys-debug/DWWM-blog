@@ -41,4 +41,14 @@ class LoginController extends Controller
         return redirect()->intended(route('articles.publicIndex'))
             ->with('success', 'Vous êtes connecté avec succès.');
     }
+
+    public function destroy(Request $request)
+    {
+        Auth::logout();
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect()->route('home')->with('success', 'Vous êtes déconnecté avec succès.');
+    }
 }

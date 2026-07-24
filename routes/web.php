@@ -60,6 +60,8 @@ Route::controller(RegisterController::class)->group(function () {
 Route::controller(LoginController::class)->group(function () {
     Route::get('/login', 'create')->name('login'); // <-- 'login' au lieu de 'login.create'
     Route::post('/login', 'store')->name('login.store');
+    
+    Route::post('/logout', 'destroy')->name('logout');
 });
 
 // // Déconnexion
