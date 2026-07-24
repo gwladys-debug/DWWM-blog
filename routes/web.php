@@ -27,6 +27,7 @@ Route::get('/categories', [CategoryController::class, 'index'])->name('categorie
 Route::get('/categories/create', [CategoryController::class, 'create'])->name('admin.categories.create');
 Route::post('/categories', [CategoryController::class, 'store'])->name('admin.categories.store');
 
+
 // --- ESPACE ADMINISTRATION ARTICLES ---
 
 // 1. Afficher la liste des articles (Admin)

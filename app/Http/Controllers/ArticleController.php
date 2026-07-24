@@ -38,14 +38,14 @@ class ArticleController extends Controller
      * Liste des articles pour l'ADMINISTRATION
      * Route Ressource : GET /admin/articles
      */
-    public function index(Request $request)
+    public function adminIndex(Request $request)
     {
         // On récupère les mêmes données, mais on les enverra à la vue admin
         $articles = Article::with(['category', 'user'])->latest()->paginate(6);
 
         $categories = Category::all();
 
-        return view('articles.articles-list-admin', compact('articles', 'categories', 'categoryId'));
+        return view('articles.articles-list-admin', compact('articles', 'categories'));
     }
 
     /** Voir le détail d'un article spécifique (Écran 2 - Visiteur) */
