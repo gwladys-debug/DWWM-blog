@@ -4,8 +4,12 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\CategoryController;
+
 use App\Http\Controllers\Auth\RegisterController;
+
 use App\Http\Controllers\Auth\LoginController;
+// use App\Http\Controllers\Auth\LogoutController;
+
 
 Route::get('/', function () {
     return view('home');
@@ -43,17 +47,19 @@ Route::put('/admin/articles/{slug}', [ArticleController::class, 'update'])->name
 // 6. Action de suppression de l'article (Écran 6)
 Route::delete('/admin/articles/{id}', [ArticleController::class, 'destroy'])->name('admin.articles.destroy');
 
+// --- ESPACE AUTHENTIFICATION ---
 
-// --- ESPACE LOGIN ---
-// Inscription (Accessible uniquement aux invités / non-connectés)
-// Route::middleware('guest')->group(function () {
-route::controller(RegisterController::class)->group(function () {
+// Inscription
+Route::controller(RegisterController::class)->group(function () {
     Route::get('/register', 'create')->name('register');
     Route::post('/register', 'store')->name('register.store');
-    // Route::get('/register', [RegisterController::class, 'create'])->name('register');
-    // Route::post('/register', [RegisterController::class, 'store'])->name('register.store');
- });
+});
 
- Route::get('/login', [LoginController::class, 'create'])->name('login.create');
- Route::post('/login', [LoginController::class, 'store'])->name('login.store');
+// Connexion
+Route::controller(LoginController::class)->group(function () {
+    Route::get('/login', 'create')->name('login'); // <-- 'login' au lieu de 'login.create'
+    Route::post('/login', 'store')->name('login.store');
+});
 
+// // Déconnexion
+// Route::post('/logout', [LogoutController::class, 'logout'])->name('logout');

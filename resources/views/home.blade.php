@@ -32,7 +32,7 @@
                 Découvrir les articles
             </a>
 
-            <a href="{{ route('login.create') }}"
+            <a href="{{ route('login') }}"
                 class="w-full sm:w-auto px-6 py-3 bg-white text-slate-700 font-medium text-sm rounded-lg border border-slate-300 hover:bg-slate-50 transition">
                 Se connecter
             </a>
