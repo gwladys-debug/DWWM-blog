@@ -17,7 +17,7 @@
         @auth
             {{-- Si l'utilisateur est connecté --}}
             <span class="text-xs font-semibold mr-4 text-slate-600">
-                Bonjour, {{ auth()->user()?->name }}
+                Bonjour, {{ auth()->user()->lastname }} {{ auth()->user()->firstname }}
             </span>
 
             {{-- Formulaire de déconnexion --}}
