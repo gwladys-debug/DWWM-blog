@@ -1,110 +1,134 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="max-w-3xl mx-auto my-8 p-6 bg-white rounded-lg shadow-md">
+    <div class="max-w-4xl mx-auto space-y-6">
 
-        <!-- Bouton Retour à la liste -->
-        <div class="mb-4">
-            <a href="{{ route('admin.articles.index') }}" class="text-blue-600 hover:text-blue-800 text-sm font-semibold">
-                ← Retour à la liste
+        {{-- En-tête --}}
+        <div class="flex items-center justify-between border-b border-slate-800 pb-5">
+            <div>
+                <h1 class="text-2xl font-bold font-mono text-slate-100 tracking-tight flex items-center gap-3">
+                    <span class="text-cyan-400">~/admin/articles/</span>nouveau
+                </h1>
+                <p class="text-xs font-mono text-slate-400 mt-1">// Rédiger et publier un nouvel article</p>
+            </div>
+            <a href="{{ route('admin.articles.index') }}"
+                class="text-xs font-mono text-slate-400 hover:text-cyan-400 transition-colors">
+                &larr; Annuler
             </a>
         </div>
 
-        <!-- Titre dynamique selon le contexte -->
-        <h1 class="text-2xl font-bold mb-6 text-gray-800">
-            {{ isset($article) ? 'Modifier l\'article' : 'Créer un nouvel article' }}
-        </h1>
-
-        <!-- Formulaire dynamique : Passe désormais l'ID en cas de modification -->
-        <form action="{{ isset($article) ? route('admin.articles.update', $article->id) : route('admin.articles.store') }}"
-            method="POST">
+        {{-- Formulaire de Création --}}
+        <form action="{{ route('admin.articles.store') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
             @csrf
-            @if (isset($article))
-                @method('PUT')
-            @endif
 
-            <!-- Champ Titre -->
-            <div class="mb-4">
-                <label for="title" class="block text-gray-700 font-bold mb-2">Titre *</label>
-                <input type="text" name="title" id="title" value="{{ old('title', $article->title ?? '') }}"
-                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:border-blue-300"
-                    required>
-            </div>
+            <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-6 backdrop-blur-xl shadow-2xl space-y-6">
 
-            <!-- Champ Slug -->
-            <div class="mb-4">
-                <label for="slug" class="block text-gray-700 font-bold mb-2">Slug (URL de l'article) *</label>
-                <input type="text" name="slug" id="slug" value="{{ old('slug', $article->slug ?? '') }}"
-                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:border-blue-300"
-                    required>
-            </div>
-
-            <!-- Choix de la Catégorie -->
-            <div class="mb-4">
-                <label for="category_id" class="block text-gray-700 font-bold mb-2">Catégorie *</label>
-                <select name="category_id" id="category_id"
-                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:border-blue-300"
-                    required>
-                    <option value="">Sélectionner une catégorie</option>
-                    @foreach ($categories as $category)
-                        <option value="{{ $category->id }}"
-                            {{ old('category_id', $article->category_id ?? '') == $category->id ? 'selected' : '' }}>
-                            {{ $category->name }}
-                        </option>
-                    @endforeach
-                </select>
-            </div>
-
-            <!-- Choix des Tags -->
-            <div class="mb-4">
-                <label for="tags" class="block text-gray-700 font-bold mb-2">Tags</label>
-                <select name="tags[]" id="tags"
-                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:border-blue-300"
-                    multiple>
-                    @foreach ($tags as $tag)
-                        <option value="{{ $tag->id }}"
-                            {{ isset($article) && $article->tags->contains($tag->id) ? 'selected' : '' }}>
-                            {{ $tag->name }}
-                        </option>
-                    @endforeach
-                </select>
-                <p class="text-xs text-gray-500 mt-1">Maintenez Ctrl (ou Cmd sur Mac) pour sélectionner plusieurs tags.</p>
-            </div>
-
-            <!-- Contenu de l'article -->
-            <div class="mb-4">
-                <label for="content" class="block text-gray-700 font-bold mb-2">Contenu *</label>
-                <textarea name="content" id="content" rows="8"
-                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:border-blue-300"
-                    required>{{ old('content', $article->content ?? '') }}</textarea>
-            </div>
-
-            <!-- Statut de l'article -->
-            <div class="mb-6">
-                <span class="block text-gray-700 font-bold mb-2">Statut *</span>
-                <div class="flex items-center space-x-4">
-                    <label class="inline-flex items-center">
-                        <input type="radio" name="status" value="DRAFT" class="form-radio text-blue-600"
-                            {{ old('status', $article->status ?? 'DRAFT') === 'DRAFT' ? 'checked' : '' }}>
-                        <span class="ml-2 text-gray-700">Brouillon</span>
+                {{-- Titre --}}
+                <div>
+                    <label for="title" class="block text-xs font-mono text-slate-300 font-semibold mb-2">
+                        <span class="text-cyan-400">#</span> Titre de l'article
                     </label>
-                    <label class="inline-flex items-center">
-                        <input type="radio" name="status" value="PUBLISHED" class="form-radio text-blue-600"
-                            {{ old('status', $article->status ?? '') === 'PUBLISHED' ? 'checked' : '' }}>
-                        <span class="ml-2 text-gray-700">Publié</span>
-                    </label>
+                    <input type="text" name="title" id="title" value="{{ old('title') }}" required
+                        class="w-full bg-slate-950 text-slate-100 border border-slate-800 rounded-lg px-4 py-2.5 text-sm font-sans focus:border-cyan-400 focus:outline-none placeholder-slate-600"
+                        placeholder="ex: Tout comprendre sur les Middlewares Laravel">
+                    @error('title')
+                        <p class="text-rose-400 text-xs font-mono mt-1">{{ $message }}</p>
+                    @enderror
                 </div>
+
+                {{-- Slug --}}
+                <div>
+                    <label for="slug" class="block text-xs font-mono text-slate-300 font-semibold mb-2">
+                        <span class="text-cyan-400">#</span> Slug (URL)
+                    </label>
+                    <input type="text" name="slug" id="slug" value="{{ old('slug') }}"
+                        class="w-full bg-slate-950 text-slate-100 border border-slate-800 rounded-lg px-4 py-2.5 text-sm font-sans focus:border-cyan-400 focus:outline-none placeholder-slate-600"
+                        placeholder="ex: tout-comprendre-sur-les-middlewares">
+                    <p class="text-[10px] font-mono text-slate-500 mt-1.5">// Personnalisez l'URL ou laissez vide pour une
+                        génération automatique.</p>
+                    @error('slug')
+                        <p class="text-rose-400 text-xs font-mono mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                {{-- Extrait / Chapeau --}}
+                <div>
+                    <label for="excerpt" class="block text-xs font-mono text-slate-300 font-semibold mb-2">
+                        <span class="text-cyan-400">#</span> Extrait de l'article (Accroche / Résumé)
+                    </label>
+                    <textarea name="excerpt" id="excerpt" rows="3" required
+                        class="w-full bg-slate-950 text-slate-100 border border-slate-800 rounded-lg p-3 text-xs font-sans leading-relaxed focus:border-cyan-400 focus:outline-none placeholder-slate-600"
+                        placeholder="Un court résumé de 2 à 3 phrases qui apparaîtra sur les cartes d'articles de la page d'accueil...">{{ old('excerpt') }}</textarea>
+                    @error('excerpt')
+                        <p class="text-rose-400 text-xs font-mono mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                {{-- Catégorie & Statut (Grille 2 colonnes) --}}
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {{-- Catégorie --}}
+                    <div>
+                        <label for="category_id" class="block text-xs font-mono text-slate-300 font-semibold mb-2">
+                            <span class="text-cyan-400">#</span> Catégorie
+                        </label>
+                        <select name="category_id" id="category_id" required
+                            style="background-color: #020617; color: #f8fafc;"
+                            class="w-full bg-slate-950 text-slate-100 border border-slate-800 rounded-lg px-3 py-2.5 text-xs font-mono focus:border-cyan-400 focus:outline-none cursor-pointer">
+                            <option value="">Sélectionner une catégorie</option>
+                            @foreach ($categories as $category)
+                                <option value="{{ $category->id }}"
+                                    {{ old('category_id') == $category->id ? 'selected' : '' }}>
+                                    {{ $category->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('category_id')
+                            <p class="text-rose-400 text-xs font-mono mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    {{-- Statut --}}
+                    <div>
+                        <label for="status" class="block text-xs font-mono text-slate-300 font-semibold mb-2">
+                            <span class="text-cyan-400">#</span> Statut de publication
+                        </label>
+                        <select name="status" id="status" style="background-color: #020617; color: #f8fafc;"
+                            class="w-full bg-slate-950 text-slate-100 border border-slate-800 rounded-lg px-3 py-2.5 text-xs font-mono focus:border-cyan-400 focus:outline-none cursor-pointer">
+                            <option value="PUBLISHED" {{ old('status') == 'PUBLISHED' ? 'selected' : '' }}>Publié</option>
+                            <option value="DRAFT" {{ old('status') == 'DRAFT' ? 'selected' : '' }}>Brouillon</option>
+                        </select>
+                    </div>
+                </div>
+
+                {{-- Image de couverture --}}
+                <div>
+                    <label for="image" class="block text-xs font-mono text-slate-300 font-semibold mb-2">
+                        <span class="text-cyan-400">#</span> Image de couverture (optionnel)
+                    </label>
+                    <input type="file" name="image" id="image"
+                        class="w-full text-xs font-mono text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-mono file:bg-slate-800 file:text-cyan-400 hover:file:bg-slate-700 cursor-pointer">
+                </div>
+
+                {{-- Contenu (Markdown) --}}
+                <div>
+                    <label for="content" class="block text-xs font-mono text-slate-300 font-semibold mb-2">
+                        <span class="text-cyan-400">#</span> Contenu de l'article (compatible Markdown)
+                    </label>
+                    <textarea name="content" id="content" rows="12" required
+                        class="w-full bg-slate-950 text-slate-100 border border-slate-800 rounded-lg p-4 text-sm font-mono leading-relaxed focus:border-cyan-400 focus:outline-none placeholder-slate-700"
+                        placeholder="Écrivez votre article ici... Utilisation des titres ### et du gras **autorisée**.">{{ old('content') }}</textarea>
+                    @error('content')
+                        <p class="text-rose-400 text-xs font-mono mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
+
             </div>
 
-            <!-- Boutons d'action -->
-            <div class="flex justify-end space-x-3 border-t pt-4">
-                <a href="{{ route('admin.articles.index') }}"
-                    class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg font-semibold transition">
-                    Annuler
-                </a>
+            {{-- Actions --}}
+            <div class="flex items-center justify-end gap-4">
                 <button type="submit"
-                    class="px-4 py-2 bg-black hover:bg-gray-800 text-white rounded-lg font-semibold transition">
-                    {{ isset($article) ? 'Enregistrer les modifications' : 'Enregistrer l\'article' }}
+                    class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-mono text-xs font-bold px-6 py-3 rounded-lg transition-all shadow-lg shadow-cyan-500/10">
+                    ENREGISTRER L'ARTICLE
                 </button>
             </div>
         </form>

@@ -13,7 +13,7 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        // 1. On récupère toutes les catégories de la table SQL avec le nombre d'articles
+        // 1. On récupère toutes les catégories de la table SQL
         $categories = Category::withCount('articles')->paginate(10);
 
         // 2. On retourne la vue en lui passant les catégories

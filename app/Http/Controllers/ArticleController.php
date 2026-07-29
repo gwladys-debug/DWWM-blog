@@ -31,35 +31,24 @@ class ArticleController extends Controller
 
         $categories = Category::all();
 
-        return view('articles.articles-list', compact('articles', 'categories', 'categoryId'));
-    }
+        return view('articles.public-index', compact('articles', 'categories', 'categoryId'));    }
 
     /**
      * Liste des articles pour l'ADMINISTRATION
      * Route Ressource : GET /admin/articles
      */
-    public function index(Request $request)
+    public function adminIndex(Request $request)
     {
-        $categoryId = $request->query('category');
-
-        $articles = Article::with(['category', 'user'])
-            ->when($categoryId, function ($query, $categoryId) {
-                return $query->where('category_id', $categoryId);
-            })
-            ->latest()
-            ->paginate(7)
-            ->withQueryString();
+        // On récupère les mêmes données, mais on les enverra à la vue admin
+        $articles = Article::with(['category', 'user'])->latest()->paginate(6);
 
         $categories = Category::all();
 
-        return view('articles.articles-list-admin', compact('articles', 'categories', 'categoryId'));
+        return view('articles.articles-list-admin', compact('articles', 'categories'));
     }
 
-    /**
-     * Voir le détail d'un article spécifique (Visiteur par Slug)
-     * Route : GET /articles/{slug}
-     */
-    public function show(string $slug): View
+    /** Voir le détail d'un article spécifique (Écran 2 - Visiteur) */
+    public function show(string $slug)
     {
         $article = Article::with(['category', 'user'])->where('slug', $slug)->firstOrFail();
 
