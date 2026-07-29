@@ -20,7 +20,7 @@ class ArticleController extends Controller
     {
         $categoryId = $request->query('category');
 
-        $articles = Article::with(['category', 'user'])
+        $articles = Article::with(['category', 'user','tags'])
             ->when($categoryId, function ($query, $categoryId) {
                 return $query->where('category_id', $categoryId);
             })
@@ -40,7 +40,7 @@ class ArticleController extends Controller
     public function adminIndex(Request $request)
     {
         // On récupère les mêmes données, mais on les enverra à la vue admin
-        $articles = Article::with(['category', 'user'])->latest()->paginate(6);
+        $articles = Article::with(['category', 'user','tags'])->latest()->paginate(6);
 
         $categories = Category::all();
 
@@ -50,7 +50,7 @@ class ArticleController extends Controller
     /** Voir le détail d'un article spécifique (Écran 2 - Visiteur) */
     public function show(string $slug)
     {
-        $article = Article::with(['category', 'user'])->where('slug', $slug)->firstOrFail();
+        $article = Article::with(['category', 'user','tags'])->where('slug', $slug)->firstOrFail();
 
         return view('articles.article-show', compact('article'));
     }
