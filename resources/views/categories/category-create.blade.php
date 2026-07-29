@@ -1,55 +1,77 @@
 @extends('layouts.app')
-@section('title', 'Créer une catégorie')
-@section('content')
 
-    <div class="max-w-2xl mx-auto">
-        <div class="flex justify-between items-center mb-6">
-            <h1 class="text-3xl font-bold text-slate-900">Nouvelle catégorie</h1>
-            <a href="{{ route('categories.index') }}" class="text-sm font-semibold text-slate-600 hover:text-black">
-                ← Retour à la liste
+@section('content')
+    {{-- Style d'urgence pour écraser tout conteneur blanc hérité --}}
+    <style>
+        /* Forcer la transparence sur les blocs parents indésirables */
+        .bg-white,
+        .card,
+        div[class*="white"] {
+            background-color: transparent !important;
+            box-shadow: none !important;
+            border: none !important;
+        }
+    </style>
+
+    <div class="max-w-4xl mx-auto space-y-6 pt-4">
+
+        {{-- En-tête visible --}}
+        <div class="flex items-center justify-between pb-2 border-b border-slate-800">
+            <h1 class="text-2xl font-bold font-mono text-cyan-400">
+                <span class="text-slate-500">~/categories/</span>nouvelle
+            </h1>
+            <a href="{{ route('categories.index') }}"
+                class="text-sm font-mono text-slate-400 hover:text-cyan-400 transition-colors">
+                &larr; Retour à la liste
             </a>
         </div>
 
-        <form action="{{ route('categories.store') }}" method="POST"
-            class="bg-white p-6 border border-gray-200 shadow-sm rounded-none">
-            @csrf
+        {{-- Formulaire sombre IDE --}}
+        <div class="bg-[#0b0f19] border border-slate-800/80 rounded-xl p-8 shadow-2xl !bg-[#0b0f19]">
+            <form action="{{ route('categories.store') }}" method="POST" class="space-y-6">
+                @csrf
 
-            {{-- Champ Nom --}}
-            <div class="mb-5">
-                <label for="name" class="block text-sm font-medium text-slate-700 mb-2">Nom de la catégorie *</label>
-                <input type="text" name="name" id="name" value="{{ old('name') }}" required
-                    class="w-full border @error('name') border-red-500 @else border-gray-300 @enderror p-2.5 text-sm focus:outline-none focus:border-black">
-                @error('name')
-                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                @enderror
-            </div>
+                {{-- Nom de la catégorie --}}
+                <div class="space-y-2">
+                    <label for="name" class="block text-sm font-mono text-slate-200 font-semibold">
+                        <span class="text-cyan-400">#</span> Nom de la catégorie <span class="text-rose-400">*</span>
+                    </label>
+                    <input type="text" name="name" id="name" value="{{ old('name') }}" required
+                        class="w-full bg-[#05070d] text-slate-200 border border-slate-800 rounded-lg px-4 py-3 text-sm font-mono focus:border-cyan-500 focus:outline-none placeholder-slate-600 shadow-inner"
+                        placeholder="ex: Web Dev">
+                    @error('name')
+                        <p class="text-rose-400 text-xs font-mono mt-1">// {{ $message }}</p>
+                    @enderror
+                </div>
 
-            {{-- Champ Slug (Optionnel) --}}
-            <div class="mb-6">
-                <label for="slug" class="block text-sm font-medium text-slate-700 mb-2">Slug (URL propre -
-                    optionnel)</label>
-                <input type="text" name="slug" id="slug" value="{{ old('slug') }}"
-                    placeholder="ex: ma-categorie"
-                    class="w-full border @error('slug') border-red-500 @else border-gray-300 @enderror p-2.5 text-sm focus:outline-none focus:border-black">
-                <p class="text-xs text-gray-500 mt-1">S'il est laissé vide, il sera généré automatiquement à partir du nom.
-                </p>
-                @error('slug')
-                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                @enderror
-            </div>
+                {{-- Slug --}}
+                <div class="space-y-2">
+                    <label for="slug" class="block text-sm font-mono text-slate-200 font-semibold">
+                        <span class="text-cyan-400">#</span> Slug (URL)
+                    </label>
+                    <input type="text" name="slug" id="slug" value="{{ old('slug') }}"
+                        class="w-full bg-[#05070d] text-slate-200 border border-slate-800 rounded-lg px-4 py-3 text-sm font-mono focus:border-cyan-500 focus:outline-none placeholder-slate-600 shadow-inner"
+                        placeholder="ex: web-dev">
+                    <p class="text-xs font-mono text-slate-500">// Personnalisez l'URL ou laissez vide pour une génération
+                        automatique.</p>
+                    @error('slug')
+                        <p class="text-rose-400 text-xs font-mono mt-1">// {{ $message }}</p>
+                    @enderror
+                </div>
 
-            {{-- Boutons d'action --}}
-            <div class="flex justify-end gap-3">
-                <a href="{{ route('categories.index') }}"
-                    class="px-5 py-2.5 text-xs font-bold uppercase tracking-wider text-slate-600 border border-gray-300 hover:bg-slate-50 transition-colors no-underline">
-                    Annuler
-                </a>
-                <button type="submit"
-                    class="bg-black text-white border border-black px-5 py-2.5 text-xs font-bold uppercase tracking-wider hover:bg-zinc-800 transition-colors">
-                    Enregistrer
-                </button>
-            </div>
-        </form>
+                {{-- Actions --}}
+                <div class="flex items-center justify-end gap-4 pt-4">
+                    <a href="{{ route('categories.index') }}"
+                        class="px-6 py-2.5 rounded-lg border border-slate-700/60 bg-[#0f1523] text-slate-300 font-mono text-xs font-bold hover:bg-slate-800 transition-all uppercase tracking-wider">
+                        ANNULER
+                    </a>
+                    <button type="submit"
+                        class="px-6 py-2.5 rounded-lg bg-black text-white border border-slate-700 font-mono text-xs font-bold hover:bg-slate-900 transition-all uppercase tracking-wider shadow-lg">
+                        ENREGISTRER
+                    </button>
+                </div>
+            </form>
+        </div>
+
     </div>
-
 @endsection

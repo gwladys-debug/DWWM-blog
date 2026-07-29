@@ -31,8 +31,7 @@ class ArticleController extends Controller
 
         $categories = Category::all();
 
-        return view('articles.articles-list', compact('articles', 'categories', 'categoryId'));
-    }
+        return view('articles.public-index', compact('articles', 'categories', 'categoryId'));    }
 
     /**
      * Liste des articles pour l'ADMINISTRATION
