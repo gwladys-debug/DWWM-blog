@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Article extends Model
 {
@@ -33,5 +34,13 @@ class Article extends Model
         // On précise le modèle lié (Tag) et le nom de la table pivot (articles_tags)
         // Les clés étrangères dans la table pivot sont id_article et id_tag
         return $this->belongsToMany(Tag::class, 'articles_tags', 'id_article', 'id_tag');
+    }
+
+    /**
+     * Les commentaires associés à l'article.
+     */
+    public function comments(): HasMany
+    {
+        return $this->hasMany(Comment::class)->latest();
     }
 }

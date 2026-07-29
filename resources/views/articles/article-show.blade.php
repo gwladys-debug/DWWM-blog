@@ -83,6 +83,57 @@
                 @endforeach
             </footer>
         @endif
+        {{-- 💬 SECTION COMMENTAIRES --}}
+        <section class="pt-8 border-t border-slate-800 space-y-6">
+            <h2 class="text-xl font-bold font-mono text-slate-100 flex items-center gap-2">
+                <span class="text-cyan-400">//</span> Commentaires
+                <span
+                    class="text-xs font-normal text-slate-500">({{ $article->comments ? $article->comments->count() : 0 }})</span>
+            </h2>
+
+            {{-- Formulaire pour poster un commentaire (si connecté) --}}
+            @auth
+                <form action="{{ route('comments.store', $article->id) }}" method="POST" class="space-y-4">
+                    @csrf
+                    <div>
+                        <textarea name="content" rows="3" required
+                            class="w-full bg-slate-950 text-slate-100 border border-slate-800 rounded-lg p-3 text-sm font-sans focus:border-cyan-400 focus:outline-none placeholder-slate-600"
+                            placeholder="Laissez un commentaire..."></textarea>
+                    </div>
+                    <div class="flex justify-end">
+                        <button type="submit"
+                            class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-mono text-xs font-bold px-4 py-2 rounded-lg transition-all">
+                            POSTER LE COMMENTAIRE
+                        </button>
+                    </div>
+                </form>
+            @else
+                <div class="p-4 bg-slate-950/60 border border-slate-800 rounded-lg text-xs font-mono text-slate-400">
+                    Vous devez être <a href="{{ route('login') }}" class="text-cyan-400 underline">connecté</a> pour poster un
+                    commentaire.
+                </div>
+            @endauth
+
+            {{-- Liste des commentaires --}}
+            <div class="space-y-4 pt-4">
+                @if ($article->comments && $article->comments->isNotEmpty())
+                    @foreach ($article->comments as $comment)
+                        <div class="p-4 bg-slate-900/60 border border-slate-800/80 rounded-xl space-y-2">
+                            <div class="flex items-center justify-between text-xs font-mono">
+                                <span class="text-cyan-400 font-semibold">@
+                                    {{ $comment->user->firstname ?? 'Utilisateur' }}</span>
+                                <time class="text-slate-500">{{ $comment->created_at->diffForHumans() }}</time>
+                            </div>
+                            <p class="text-sm text-slate-300 font-sans leading-relaxed">
+                                {{ $comment->content }}
+                            </p>
+                        </div>
+                    @endforeach
+                @else
+                    <p class="text-xs font-mono text-slate-500">// Aucun commentaire pour le moment. Soyez le premier !</p>
+                @endif
+            </div>
+        </section>
 
     </div>
 @endsection

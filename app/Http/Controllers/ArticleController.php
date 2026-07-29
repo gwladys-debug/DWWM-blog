@@ -50,11 +50,12 @@ class ArticleController extends Controller
     /** Voir le détail d'un article spécifique (Écran 2 - Visiteur) */
     public function show(string $slug)
     {
-        $article = Article::with(['category', 'user','tags'])->where('slug', $slug)->firstOrFail();
+        $article = Article::with(['category', 'user', 'tags', 'comments.user'])
+            ->where('slug', $slug)
+            ->firstOrFail();
 
         return view('articles.article-show', compact('article'));
     }
-
     /**
      * 1. Afficher le formulaire de création (Admin)
      * Route Ressource : GET /admin/articles/create

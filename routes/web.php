@@ -5,6 +5,7 @@ use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\CommentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -52,6 +53,10 @@ Route::middleware('auth')->group(function () {
 
     // Déconnexion (Accessible par tout utilisateur connecté)
     Route::post('/logout', [LoginController::class, 'destroy'])->name('logout');
+
+    // Espace commentaires (Accessible par tout utilisateur connecté)
+    Route::post('/articles/{slug}/comments', [CommentController::class, 'store'])->name('comments.store');
+
 
     /*
     |--------------------------------------------------------------------------
